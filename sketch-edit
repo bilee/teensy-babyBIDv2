@@ -1,0 +1,72 @@
+//this sketch is a re-work of orig
+// ------------------------------------------>
+
+/*
+Baby Interface Device V1.0
+Build a simple Button-style USB interface for infant learning development.
+Build instructions for the device are available at http://matthewroy.com/bid/
+
+Developed by: Matthew C. Roy 2011
+Website: http://matthewroy.com/bid/
+License: Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+http://creativecommons.org/licenses/by-nc-sa/3.0/
+
+You may share this code and modify for any non-commercial purposes.
+*/
+
+const int RGB_R=9;
+const int RGB_G=14;
+const int RGB_B=15;
+const int PBTN=11;
+
+int rgb_rval=255; //initial r val
+int rgb_gval=255; //initial g val
+int rgb_bval=255; //initial b val
+
+int pbtn_state_cur=0; //cur value of push (for change)
+int pbtn_state_prev=0; //prev value of push (for change)
+
+long interval_off=30000; //milliseconds to wait before turning off light
+long pbtn_last_press=0; //last time the btn was pressed.
+long pbtn_state_timer=0; //milliseconds since push button change
+
+void setup(){
+pinMode(RGB_R,OUTPUT);
+pinMode(RGB_G,OUTPUT);
+pinMode(RGB_B,OUTPUT);
+pinMode(PBTN,INPUT);
+}
+void loop(){
+// set all 3 pins to the desired intensity
+pbtn_state_timer = millis();
+/*if((pbtn_state_timer-pbtn_last_press)>interval_off){
+rgb_rval=255;
+rgb_gval=255;
+rgb_bval=255;
+}*/
+if(check_switch()){
+pbtn_last_press=millis();
+rgb_rval=random(0,255);
+rgb_gval=random(0,255);
+rgb_bval=random(0,255);
+Keyboard.set_key1(KEY_SPACE);
+Keyboard.send_now();
+Keyboard.set_key1(0);
+Keyboard.send_now();
+}
+
+analogWrite(RGB_R, rgb_gval);
+analogWrite(RGB_G, rgb_gval);
+analogWrite(RGB_B, rgb_bval);
+}
+boolean check_switch(){
+pbtn_state_prev=pbtn_state_cur;
+pbtn_state_cur=digitalRead(PBTN);
+if(pbtn_state_prev!=pbtn_state_cur){
+//switch happened
+return true;
+}
+else{
+return false;
+}
+}
